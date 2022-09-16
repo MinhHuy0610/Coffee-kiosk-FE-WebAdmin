@@ -1,5 +1,8 @@
-import React from 'react'
+/* eslint-disable no-unused-vars */
+import React, { useState, useRef, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
+
 import {
   CButton,
   CCard,
@@ -8,7 +11,11 @@ import {
   CCol,
   CContainer,
   CForm,
-  CFormInput,
+  // CFormInput,
+  // CToast,
+  // CToastBody,
+  // CToaster,
+  // CToastHeader,
   CInputGroup,
   CInputGroupText,
   CRow,
@@ -16,7 +23,69 @@ import {
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
 
-const Login = () => {
+export default function Login({ setToken, setRole, setUserId }) {
+  const userRef = useRef()
+  const errRef = useRef()
+
+  const [username, setUsername] = useState()
+  const [password, setPassword] = useState()
+  const [success, setSucess] = useState(false)
+  const [errMsg, setErrMsg] = useState('')
+
+  useEffect(() => {
+    userRef.current.focus()
+  }, [])
+
+  useEffect(() => {
+    setErrMsg('')
+  }, [username, password])
+
+  async function loginUser(credentials) {
+    console.log(credentials)
+    console.log(JSON.stringify(credentials))
+    return fetch('https://localhost:44361/api/v1/auth', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(credentials),
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error(response.status)
+        else return response.json()
+      })
+      .catch((error) => {
+        console.log(error)
+        if (error.status === 404) {
+          setErrMsg('Tên đăng nhập hoặc mật khẩu không chính xác')
+        } else {
+          setErrMsg('Tên đăng nhập hoặc mật khẩu không chính xác')
+        }
+        errRef.current.focus()
+      })
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    console.log(username)
+    console.log(password)
+    const data = await loginUser({
+      username,
+      password,
+    })
+    console.log(data)
+    if (!data) {
+      setToken('')
+      setRole('')
+    } else {
+      // var obj = JSON.parse(JSON.stringify(data))
+      console.log(data.data)
+      setToken(data.data.token)
+      setRole(data.data.roleName)
+      setUserId(data.data.id)
+    }
+  }
+
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
@@ -25,28 +94,53 @@ const Login = () => {
             <CCardGroup>
               <CCard className="p-4">
                 <CCardBody>
-                  <CForm>
-                    <h1>Login</h1>
-                    <p className="text-medium-emphasis">Sign In to your account</p>
+                  <CForm onSubmit={handleSubmit}>
+                    <h1>Đăng nhập</h1>
+                    <p
+                      ref={errRef}
+                      className={errMsg ? 'errmsg' : 'offscreen'}
+                      aria-live="assertive"
+                    >
+                      {errMsg}
+                    </p>
                     <CInputGroup className="mb-3">
                       <CInputGroupText>
                         <CIcon icon={cilUser} />
                       </CInputGroupText>
-                      <CFormInput placeholder="Username" autoComplete="username" />
+                      <input
+                        type="text"
+                        id="username"
+                        ref={userRef}
+                        autoComplete="off"
+                        onChange={(e) => setUsername(e.target.value)}
+                        className="input"
+                        placeholder="Tài Khoản"
+                        required
+                      />
+                      {/* <CFormInput
+                      onChange={(e) => setUsername(e.target.value)}
+                      type="text"
+                      placeholder="Tài Khoản"
+                      feedbackInvalid="Vui lòng nhập tài khoản"
+                      required
+                      /> */}
                     </CInputGroup>
                     <CInputGroup className="mb-4">
                       <CInputGroupText>
                         <CIcon icon={cilLockLocked} />
                       </CInputGroupText>
-                      <CFormInput
+                      <input
                         type="password"
-                        placeholder="Password"
-                        autoComplete="current-password"
+                        id="password"
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="input"
+                        placeholder="Mật Khẩu"
+                        required
                       />
                     </CInputGroup>
                     <CRow>
                       <CCol xs={6}>
-                        <CButton color="primary" className="px-4">
+                        <CButton color="primary" className="px-4" type="submit">
                           Login
                         </CButton>
                       </CCol>
@@ -63,10 +157,6 @@ const Login = () => {
                 <CCardBody className="text-center">
                   <div>
                     <h2>Sign up</h2>
-                    <p>
-                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                      tempor incididunt ut labore et dolore magna aliqua.
-                    </p>
                     <Link to="/register">
                       <CButton color="primary" className="mt-3" active tabIndex={-1}>
                         Register Now!
@@ -82,5 +172,12 @@ const Login = () => {
     </div>
   )
 }
-
-export default Login
+Login.propTypes = {
+  setToken: PropTypes.func.isRequired,
+}
+Login.propTypes = {
+  setRole: PropTypes.func.isRequired,
+}
+Login.propTypes = {
+  setUserId: PropTypes.func.isRequired,
+}
