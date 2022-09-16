@@ -3,6 +3,9 @@ import React from 'react'
 const Dashboard = React.lazy(() => import('./views/dashboard/Dashboard'))
 const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
+const Products = React.lazy(() => import('./views/Product/Products'))
+const Categories = React.lazy(() => import('./views/Category/Categories'))
+const CreateCategoryForm = React.lazy(() => import('./views/Category/CreateCategoriesForm'))
 
 // Base
 const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
@@ -95,6 +98,9 @@ const routes = [
   { path: '/notifications/modals', name: 'Modals', element: Modals },
   { path: '/notifications/toasts', name: 'Toasts', element: Toasts },
   { path: '/widgets', name: 'Widgets', element: Widgets },
+  { path: '/product/products', name: 'Sản phẩm', element: Products },
+  { path: '/category/categories', name: 'Loại Sản phẩm', element: Categories },
+  { path: '/category/create_categories', name: 'taoj loai Sản phẩm', element: CreateCategoryForm },
 ]
 
 export default routes

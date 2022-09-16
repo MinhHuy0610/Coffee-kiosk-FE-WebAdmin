@@ -56,18 +56,23 @@ const _nav = [
     items: [
       {
         component: CNavItem,
-        name: 'Product',
-        to: '/product/all-products',
+        name: 'Sản Phẩm',
+        to: '/product/products',
       },
       {
         component: CNavItem,
-        name: 'Add New Product',
-        to: '/product/all-products',
+        name: 'Loại Sản Phẩm',
+        to: '/category/categories',
       },
       {
         component: CNavItem,
         name: 'Buttons groups',
         to: '/buttons/button-groups',
+      },
+      {
+        component: CNavItem,
+        name: 'Tao Loai',
+        to: '/category/create_categories',
       },
     ],
   },
