@@ -6,6 +6,7 @@ import './scss/style.scss'
 import useRole from './components/app/useRole'
 import useToken from './components/app/useToken'
 import useUserId from './components/app/useUserId'
+import "react-toastify/dist/ReactToastify.css";
 
 const loading = (
   <div className="pt-3 text-center">

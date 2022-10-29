@@ -17,15 +17,14 @@ import {
 } from '@coreui/react'
 import axios from 'axios'
 import DataTable from "react-data-table-component"
-import CreateProduct from './CreateProduct'
-import DetailProduct from './DetailProduct'
-import { ToastContainer } from "react-toastify";
-export default function Products() {
+import CreateCampaign from './CreateCampaign'
+import DetailCampaign from './DetailCampaign'
+export default function Campaigns() {
     const token = localStorage.getItem('token')
-    const urlProduct = 'https://localhost:44361/api/v1/products?Status=0'
-    var [product, setProduct] = useState([])
+    const urlCampaign = 'https://localhost:44361/api/v1/campaigns?Status=0'
+    var [campaign, setCampaign] = useState([])
     const [search, setSearch] = useState('')
-    const [productInfo, setProductInfo] = useState()
+    const [campaignInfo, setCampaignInfo] = useState()
     const [detailVisible, setDetailVisible] = useState(false)
     // var [isClicked, setIsClicked] = useState(false);
     // const [show, setShow] = useState(false);
@@ -34,7 +33,7 @@ export default function Products() {
     //     setShow(false);
     // };
     const fetchData = async () => {
-        axios.get(urlProduct, {
+        axios.get(urlCampaign, {
             headers: {
                 'Conttent-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
@@ -46,9 +45,9 @@ export default function Products() {
                 console.log(res.data)
                 console.log(res.data.data)
                 console.log(res.data.data.data)
-                setProduct(res.data.data.data)
-                product = res.data.data.data
-                console.log(product)
+                setCampaign(res.data.data.data)
+                campaign = res.data.data.data
+                console.log(campaign)
             }).catch((error) => {
                 console.log(error)
             })
@@ -57,9 +56,9 @@ export default function Products() {
     const checkStatus = (status) => {
         switch (status) {
             case 0:
-                return 'Đang bán'
+                return 'Đang hoạt động'
             case 1:
-                return 'Ngừng bán'
+                return 'Ngừng hoạt động'
             case 3:
                 return 'Đã xóa'
         }
@@ -75,7 +74,7 @@ export default function Products() {
         }
     }
     // const editAction = (row) => {
-    //     setProductInfo(row.id)
+    //     setCampaignInfo(row.id)
     // }
     // const onRowClick = (row) => {
     //     setDetailVisible(!detailVisible)
@@ -86,21 +85,23 @@ export default function Products() {
         return (
             <>
                 <CButton onClick={() => setUpdateVisible(!updatuVisible)}>Chi tiết</CButton>
-                <CModal size="xl" alignment="center" visible={updatuVisible} onClose={() => {
-                    setUpdateVisible(false)
-                    window.location.reload()
-                }}>
+                <CModal size="xl" alignment="center" visible={updatuVisible}
+                    onClose={() => {
+                        setUpdateVisible(false)
+                        window.location.reload()
+                    }}>
                     <CModalHeader>
-                        <CModalTitle>Thông Tin Sản phẩm</CModalTitle>
+                        <CModalTitle>Thông Tin Chiến Dịch</CModalTitle>
                     </CModalHeader>
                     <CModalBody>
-                        <DetailProduct id={row.id} />
+                        <DetailCampaign id={row.id} />
                     </CModalBody>
                     <CModalFooter>
-                        <CButton color="secondary" onClick={() => {
-                            setUpdateVisible(false)
-                            window.location.reload()
-                        }}>
+                        <CButton color="secondary"
+                            onClick={() => {
+                                setUpdateVisible(false)
+                                window.location.reload()
+                            }}>
                             Đóng
                         </CButton>
                     </CModalFooter>
@@ -111,21 +112,16 @@ export default function Products() {
 
     const columns = [
         {
-            name: 'Tên Sản Phẩm',
+            name: 'Tên Chiến dịch',
             selector: row => row.name,
             sortable: true,
             cell: row => (<div>{row.name}</div>)
         },
         {
-            name: 'Giá bán',
-            selector: row => row.price,
+            name: 'Khu vực',
+            selector: row => row.areaName,
             sortable: true,
-            cell: row => (<div>{parseFloat(row.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</div>)
-        }, {
-            name: 'Loại',
-            selector: row => row.categoryName,
-            sortable: true,
-            cell: row => (<div>{row.categoryName}</div>)
+            cell: row => (<div>{row.areaName}</div>)
         },
         {
             name: 'Trạng thái',
@@ -148,24 +144,23 @@ export default function Products() {
         fetchData()
     }, [])
 
-    const filteredData = product.filter(item => {
+    const filteredData = campaign.filter(item => {
         return item.name.toLowerCase().match(search.toLowerCase())
     })
 
     return (
         <CRow>
             <CCol xs={12}>
-                {/* <ToastContainer autoClose={1000} /> */}
                 <CCard className="mb-4">
                     <CCardHeader>
-                        <strong>Sản phẩm</strong>
+                        <strong>Chiến Dịch</strong>
                     </CCardHeader>
                     <CCardBody>
                         <DataTable
                             columns={columns}
                             data={filteredData}
                             pagination
-                            title='Danh sách sản phẩm'
+                            title='Danh sách chiến dịch'
                             fixedHeader
                             fixedHeaderScrollHeight='400px'
                             highlightOnHover
@@ -194,16 +189,16 @@ const VerticallyCentered = () => {
     const [visible, setVisible] = useState(false)
     return (
         <>
-            <CButton onClick={() => setVisible(!visible)}>Thêm Sản Phẩm</CButton>
+            <CButton onClick={() => setVisible(!visible)}>Thêm Chiến Dịch</CButton>
             <CModal size="xl" alignment="center" visible={visible} onClose={() => {
                 setVisible(false)
                 window.location.reload()
             }}>
                 <CModalHeader>
-                    <CModalTitle>Thêm Sản phẩm</CModalTitle>
+                    <CModalTitle>Thêm Chiến Dịch</CModalTitle>
                 </CModalHeader>
                 <CModalBody>
-                    <CreateProduct />
+                    <CreateCampaign />
                 </CModalBody>
                 <CModalFooter>
                     <CButton color="secondary" onClick={() => {

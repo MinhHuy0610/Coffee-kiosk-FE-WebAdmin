@@ -1,29 +1,87 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable prettier/prettier */
+/* eslint-disable react/prop-types */
 import React, { useState, useEffect } from 'react'
 import {
   CButton,
   CCol,
   CForm,
   CFormInput,
-  CImage,
-  CContainer,
   CFormFeedback,
   CFormLabel,
-  CFormSelect,
+  CContainer,
   CRow,
+  CImage,
+  CFormSelect,
+  CListGroup,
+  CListGroupItem,
 } from '@coreui/react'
 import axios from 'axios'
 import { toast, ToastContainer } from "react-toastify";
 
-const CreateProduct = () => {
+export default function DetailProduct(props) {
   const token = localStorage.getItem('token')
-  const [validated, setValidated] = useState(false)
-  var [cateOption, setCateOption] = useState([])
-  var [listImage, setListImage] = useState([])
-  // var listImages = []
-  console.log(token)
+  const id = props.id
+  const urlGetProduct = `https://localhost:44361/api/v1/products/${id}`
   const urlCategory = 'https://localhost:44361/api/v1/categories?Status=0'
+  var [cateOption, setCateOption] = useState([]);
+  const [validated, setValidated] = useState(false)
+  var [product, setProduct] = useState([])
+  const [editable, setEditable] = useState(false)
+  const [urlI, setUrlI] = useState([])
+  const listI = []
+  const handleSubmit = (event) => {
+    const noti = toast("Vui lòng đợi...");
+    const form = event.currentTarget
+    if (form.checkValidity() === false) {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    setValidated(true)
+    if (form.checkValidity() === true) {
+      event.preventDefault()
+      const name = event.target.name.value
+      const categoryId = event.target.categoryId.value
+      const description = event.target.description.value
+      const price = event.target.price.value
+      const data = {
+        id,
+        name,
+        categoryId,
+        description,
+        price,
+      }
+      console.log(JSON.stringify(data))
+      const urlProduct = 'https://localhost:44361/api/v1/products'
+      fetch(urlProduct, {
+        method: "PUT",
+        // axios.post(urlProduct, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error(response.status);
+          else {
+            toast.update(noti, {
+              render: "Cập nhật thành công",
+              type: "success",
+            });
+            return response.status;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          toast.update(noti, {
+            render: error.toString(),
+            type: "error",
+            isLoading: true,
+          });
+        });
+    }
+  }
   const fetchData = async () => {
     axios.get(urlCategory, {
       headers: {
@@ -46,63 +104,33 @@ const CreateProduct = () => {
       }).catch((error) => {
         console.log(error)
       })
-  }
-  const handleSubmit = (event) => {
-    const noti = toast("Vui lòng đợi...");
-    const form = event.currentTarget
-    if (form.checkValidity() === false) {
-      event.preventDefault()
-      event.stopPropagation()
-    }
-    setValidated(true)
-    if (form.checkValidity() === true) {
-      event.preventDefault()
-      const name = event.target.name.value
-      const categoryId = event.target.categoryId.value
-      const description = event.target.description.value
-      const price = event.target.price.value
-      const data = {
-        name,
-        categoryId,
-        description,
-        price,
-        listImage,
-      }
-      console.log(JSON.stringify(data))
-      const urlProduct = 'https://localhost:44361/api/v1/products'
-      fetch(urlProduct, {
-        method: "POST",
-        // axios.post(urlProduct, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
-        },
-        body: JSON.stringify(data),
+    axios.get(urlGetProduct, {
+      headers: {
+        'Conttent-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    })
+      .then((res) => {
+        if (res.status == 200)
+          console.log(res)
+        console.log(res.data)
+        console.log(res.data.data)
+        console.log(res.data.data)
+        setProduct(res.data.data)
+        product = res.data.data
+        setUrlI(
+          product.listImage.map((image) => {
+            var url = image.link
+            return url
+          }))
+      }).catch((error) => {
+        console.log(error)
       })
-        .then((response) => {
-          if (!response.ok) throw new Error(response.status);
-          else {
-            toast.update(noti, {
-              render: "Tạo thành công",
-              type: "success",
-              isLoading: false,
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-          toast.update(noti, {
-            render: error.toString(),
-            type: "error",
-            isLoading: false,
-          });
-        });
-    }
   }
   useEffect(() => {
     fetchData()
-    console.log(cateOption)
   }, [])
+
   const UploadAndDisplayImage = () => {
     const [selectedImage, setSelectedImage] = useState(null);
     let base64code = ""
@@ -117,18 +145,12 @@ const CreateProduct = () => {
       console.log(fileString);
       // this.base64code = fileString
     };
-    const setImage = fileString => {
-      var imageStr = fileString.slice(23)
-      listImage.push(imageStr)
-      console.log("listImag: " + listImage)
-    }
 
     const getBase64 = file => {
       let reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
         onLoad(reader.result);
-        setImage(reader.result)
       };
     };
 
@@ -152,42 +174,58 @@ const CreateProduct = () => {
       </div>
     );
   };
+
   return (
     <CContainer className="px-4">
       <CRow xs={{ gutterX: 5 }}>
         <ToastContainer autoClose={1000} />
-        <CForm className="row g-3 needs-validation" validated={validated} onSubmit={handleSubmit}>
-          <CCol>
-            <div>{UploadAndDisplayImage()}</div>
-          </CCol>
-          <CCol>
+        <CCol>
+          <CListGroup>
+            {urlI.map(
+              (item, index) => (
+                <CImage key={index} width={200} height={200} src={item} />
+              ),
+            )}
+          </CListGroup>
+          {/* <CImage src={linknn} /> */}
+          <div>{UploadAndDisplayImage()}</div>
+        </CCol>
+        <CCol>
+          <CForm className="row g-3 needs-validation" validated={validated} onSubmit={handleSubmit}>
             <CCol md={12}>
               <CFormLabel htmlFor="validationDefault01">Tên Sản Phẩm</CFormLabel>
-              <CFormInput type="text" id="name" required />
+              <CFormInput type="text" id="name" readOnly={!editable} required defaultValue={product.name} />
             </CCol>
             <CCol md={12}>
               <CFormLabel htmlFor="validationDefault02">Mô tả</CFormLabel>
-              <CFormInput type="text" id="description" required />
+              <CFormInput type="text" id="description" readOnly={!editable} required defaultValue={product.description} />
             </CCol>
             <CCol md={12}>
               <CFormLabel htmlFor="validationDefaultUsername">Loại Sản phẩm</CFormLabel>
-              <CFormSelect id="categoryId" options={cateOption}>
-              </CFormSelect>
+              <CFormInput type="text" id="categoryName" readOnly={true} required defaultValue={product.categoryName} />
             </CCol>
             <CCol md={12}>
               <CFormLabel htmlFor="validationDefault03">Giá bán</CFormLabel>
-              <CFormInput type="text" id="price" required />
+              <CFormInput type="text" id="price" readOnly={!editable} required defaultValue={product.price} />
+            </CCol>
+            <CCol md={12}>
+              <CFormLabel htmlFor="validationDefaultUsername">Chọn để thay đổi loại Sản phẩm</CFormLabel>
+              <CFormSelect id="categoryId" options={cateOption} disabled={!editable} >
+              </CFormSelect>
             </CCol>
             <CCol xs={12}>
-              <CButton color="primary" type="submit">
-                Tạo Sản phẩm
+              <CButton color="primary" onClick={() => setEditable(true)} >
+                Chỉnh sửa
+              </CButton>
+              <CButton color="primary" type="submit" disabled={!editable} >
+                Cập nhật Sản phẩm
               </CButton>
             </CCol>
-          </CCol>
-        </CForm>
+          </CForm>
+        </CCol>
       </CRow>
     </CContainer>
   )
 }
 
-export default CreateProduct
+

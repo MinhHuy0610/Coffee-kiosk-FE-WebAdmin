@@ -17,15 +17,14 @@ import {
 } from '@coreui/react'
 import axios from 'axios'
 import DataTable from "react-data-table-component"
-import CreateProduct from './CreateProduct'
-import DetailProduct from './DetailProduct'
-import { ToastContainer } from "react-toastify";
-export default function Products() {
+import CreateShop from './CreateShop'
+import DetailShop from './DetailShop'
+export default function Shops() {
     const token = localStorage.getItem('token')
-    const urlProduct = 'https://localhost:44361/api/v1/products?Status=0'
-    var [product, setProduct] = useState([])
+    const urlShop = 'https://localhost:44361/api/v1/shops?Status=0'
+    var [shop, setShop] = useState([])
     const [search, setSearch] = useState('')
-    const [productInfo, setProductInfo] = useState()
+    const [shopInfo, setShopInfo] = useState()
     const [detailVisible, setDetailVisible] = useState(false)
     // var [isClicked, setIsClicked] = useState(false);
     // const [show, setShow] = useState(false);
@@ -34,7 +33,7 @@ export default function Products() {
     //     setShow(false);
     // };
     const fetchData = async () => {
-        axios.get(urlProduct, {
+        axios.get(urlShop, {
             headers: {
                 'Conttent-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
@@ -46,9 +45,9 @@ export default function Products() {
                 console.log(res.data)
                 console.log(res.data.data)
                 console.log(res.data.data.data)
-                setProduct(res.data.data.data)
-                product = res.data.data.data
-                console.log(product)
+                setShop(res.data.data.data)
+                shop = res.data.data.data
+                console.log(shop)
             }).catch((error) => {
                 console.log(error)
             })
@@ -75,7 +74,7 @@ export default function Products() {
         }
     }
     // const editAction = (row) => {
-    //     setProductInfo(row.id)
+    //     setShopInfo(row.id)
     // }
     // const onRowClick = (row) => {
     //     setDetailVisible(!detailVisible)
@@ -91,10 +90,10 @@ export default function Products() {
                     window.location.reload()
                 }}>
                     <CModalHeader>
-                        <CModalTitle>Thông Tin Sản phẩm</CModalTitle>
+                        <CModalTitle>Thông Tin Cửa Hàng</CModalTitle>
                     </CModalHeader>
                     <CModalBody>
-                        <DetailProduct id={row.id} />
+                        <DetailShop id={row.id} />
                     </CModalBody>
                     <CModalFooter>
                         <CButton color="secondary" onClick={() => {
@@ -111,21 +110,21 @@ export default function Products() {
 
     const columns = [
         {
-            name: 'Tên Sản Phẩm',
+            name: 'Tên Cửa Hàng',
             selector: row => row.name,
             sortable: true,
             cell: row => (<div>{row.name}</div>)
         },
         {
-            name: 'Giá bán',
-            selector: row => row.price,
+            name: 'Địa chỉ',
+            selector: row => row.address,
             sortable: true,
-            cell: row => (<div>{parseFloat(row.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</div>)
+            cell: row => (<div>{row.address}</div>)
         }, {
-            name: 'Loại',
-            selector: row => row.categoryName,
+            name: 'Khu vực',
+            selector: row => row.areaName,
             sortable: true,
-            cell: row => (<div>{row.categoryName}</div>)
+            cell: row => (<div>{row.areaName}</div>)
         },
         {
             name: 'Trạng thái',
@@ -148,24 +147,23 @@ export default function Products() {
         fetchData()
     }, [])
 
-    const filteredData = product.filter(item => {
+    const filteredData = shop.filter(item => {
         return item.name.toLowerCase().match(search.toLowerCase())
     })
 
     return (
         <CRow>
             <CCol xs={12}>
-                {/* <ToastContainer autoClose={1000} /> */}
                 <CCard className="mb-4">
                     <CCardHeader>
-                        <strong>Sản phẩm</strong>
+                        <strong>Cửa Hàng</strong>
                     </CCardHeader>
                     <CCardBody>
                         <DataTable
                             columns={columns}
                             data={filteredData}
                             pagination
-                            title='Danh sách sản phẩm'
+                            title='Danh sách Cửa Hàng'
                             fixedHeader
                             fixedHeaderScrollHeight='400px'
                             highlightOnHover
@@ -194,16 +192,16 @@ const VerticallyCentered = () => {
     const [visible, setVisible] = useState(false)
     return (
         <>
-            <CButton onClick={() => setVisible(!visible)}>Thêm Sản Phẩm</CButton>
+            <CButton onClick={() => setVisible(!visible)}>Thêm Cửa Hàng</CButton>
             <CModal size="xl" alignment="center" visible={visible} onClose={() => {
                 setVisible(false)
                 window.location.reload()
             }}>
                 <CModalHeader>
-                    <CModalTitle>Thêm Sản phẩm</CModalTitle>
+                    <CModalTitle>Thêm Cửa Hàng</CModalTitle>
                 </CModalHeader>
                 <CModalBody>
-                    <CreateProduct />
+                    <CreateShop />
                 </CModalBody>
                 <CModalFooter>
                     <CButton color="secondary" onClick={() => {

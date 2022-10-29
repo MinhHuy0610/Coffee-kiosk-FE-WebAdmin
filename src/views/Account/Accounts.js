@@ -17,15 +17,14 @@ import {
 } from '@coreui/react'
 import axios from 'axios'
 import DataTable from "react-data-table-component"
-import CreateProduct from './CreateProduct'
-import DetailProduct from './DetailProduct'
+import CreateAccount from './CreateAccount'
+// import DetailAccount from './DetailAccount'
 import { ToastContainer } from "react-toastify";
-export default function Products() {
+export default function Accounts() {
     const token = localStorage.getItem('token')
-    const urlProduct = 'https://localhost:44361/api/v1/products?Status=0'
-    var [product, setProduct] = useState([])
+    const urlAccount = 'https://localhost:44361/api/v1/accounts?Status=0'
+    var [account, setAccount] = useState([])
     const [search, setSearch] = useState('')
-    const [productInfo, setProductInfo] = useState()
     const [detailVisible, setDetailVisible] = useState(false)
     // var [isClicked, setIsClicked] = useState(false);
     // const [show, setShow] = useState(false);
@@ -34,7 +33,7 @@ export default function Products() {
     //     setShow(false);
     // };
     const fetchData = async () => {
-        axios.get(urlProduct, {
+        axios.get(urlAccount, {
             headers: {
                 'Conttent-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
@@ -46,9 +45,9 @@ export default function Products() {
                 console.log(res.data)
                 console.log(res.data.data)
                 console.log(res.data.data.data)
-                setProduct(res.data.data.data)
-                product = res.data.data.data
-                console.log(product)
+                setAccount(res.data.data.data)
+                account = res.data.data.data
+                console.log(account)
             }).catch((error) => {
                 console.log(error)
             })
@@ -74,33 +73,29 @@ export default function Products() {
                 return 'text-dark'
         }
     }
-    // const editAction = (row) => {
-    //     setProductInfo(row.id)
-    // }
-    // const onRowClick = (row) => {
-    //     setDetailVisible(!detailVisible)
-    //     DetailForm(row)
-    // }
+
     const DetailForm = (row) => {
         const [updatuVisible, setUpdateVisible] = useState(false)
         return (
             <>
                 <CButton onClick={() => setUpdateVisible(!updatuVisible)}>Chi tiết</CButton>
-                <CModal size="xl" alignment="center" visible={updatuVisible} onClose={() => {
-                    setUpdateVisible(false)
-                    window.location.reload()
-                }}>
+                <CModal size="xl" alignment="center" visible={updatuVisible}
+                    onClose={() => {
+                        setUpdateVisible(false)
+                        window.location.reload()
+                    }}>
                     <CModalHeader>
-                        <CModalTitle>Thông Tin Sản phẩm</CModalTitle>
+                        <CModalTitle>Thông Tin Tài khoản</CModalTitle>
                     </CModalHeader>
                     <CModalBody>
-                        <DetailProduct id={row.id} />
+                        {/* <DetailAccount id={row.id} /> */}
                     </CModalBody>
                     <CModalFooter>
-                        <CButton color="secondary" onClick={() => {
-                            setUpdateVisible(false)
-                            window.location.reload()
-                        }}>
+                        <CButton color="secondary"
+                            onClick={() => {
+                                setUpdateVisible(false)
+                                window.location.reload()
+                            }}>
                             Đóng
                         </CButton>
                     </CModalFooter>
@@ -111,21 +106,16 @@ export default function Products() {
 
     const columns = [
         {
-            name: 'Tên Sản Phẩm',
-            selector: row => row.name,
+            name: 'Tên Tài khoản',
+            selector: row => row.username,
             sortable: true,
-            cell: row => (<div>{row.name}</div>)
+            cell: row => (<div>{row.username}</div>)
         },
         {
-            name: 'Giá bán',
-            selector: row => row.price,
+            name: 'Vai trò',
+            selector: row => row.roleName,
             sortable: true,
-            cell: row => (<div>{parseFloat(row.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</div>)
-        }, {
-            name: 'Loại',
-            selector: row => row.categoryName,
-            sortable: true,
-            cell: row => (<div>{row.categoryName}</div>)
+            cell: row => (<div>{row.roleName}</div>)
         },
         {
             name: 'Trạng thái',
@@ -136,9 +126,6 @@ export default function Products() {
         {
             name: 'Action',
             cell: (row) => (
-                // <button className='btn btn-primary' onClick={editAction(row)} >
-                //     Edit
-                // </button>
                 DetailForm(row)
             ),
         },
@@ -148,28 +135,26 @@ export default function Products() {
         fetchData()
     }, [])
 
-    const filteredData = product.filter(item => {
+    const filteredData = account.filter(item => {
         return item.name.toLowerCase().match(search.toLowerCase())
     })
 
     return (
         <CRow>
             <CCol xs={12}>
-                {/* <ToastContainer autoClose={1000} /> */}
                 <CCard className="mb-4">
                     <CCardHeader>
-                        <strong>Sản phẩm</strong>
+                        <strong>Tài khoản</strong>
                     </CCardHeader>
                     <CCardBody>
                         <DataTable
                             columns={columns}
                             data={filteredData}
                             pagination
-                            title='Danh sách sản phẩm'
+                            title='Danh sách Tài khoản'
                             fixedHeader
                             fixedHeaderScrollHeight='400px'
                             highlightOnHover
-                            // onRowClicked={DetailForm}
                             subHeader
                             subHeaderComponent={
                                 <input
@@ -194,22 +179,24 @@ const VerticallyCentered = () => {
     const [visible, setVisible] = useState(false)
     return (
         <>
-            <CButton onClick={() => setVisible(!visible)}>Thêm Sản Phẩm</CButton>
-            <CModal size="xl" alignment="center" visible={visible} onClose={() => {
-                setVisible(false)
-                window.location.reload()
-            }}>
+            <CButton onClick={() => setVisible(!visible)}>Thêm Tài khoản</CButton>
+            <CModal size="xl" alignment="center" visible={visible}
+                onClose={() => {
+                    setVisible(false)
+                    window.location.reload()
+                }}>
                 <CModalHeader>
-                    <CModalTitle>Thêm Sản phẩm</CModalTitle>
+                    <CModalTitle>Thêm Tài khoản</CModalTitle>
                 </CModalHeader>
                 <CModalBody>
-                    <CreateProduct />
+                    <CreateAccount />
                 </CModalBody>
                 <CModalFooter>
-                    <CButton color="secondary" onClick={() => {
-                        setVisible(false)
-                        window.location.reload()
-                    }}>
+                    <CButton color="secondary"
+                        onClick={() => {
+                            setVisible(false)
+                            window.location.reload()
+                        }}>
                         Đóng
                     </CButton>
                 </CModalFooter>

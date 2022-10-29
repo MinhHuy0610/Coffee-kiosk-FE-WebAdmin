@@ -23,10 +23,11 @@ import {
 } from '@coreui/react'
 import axios from 'axios'
 import { toast, ToastContainer } from "react-toastify";
-const CreateCategoryForm = () => {
+
+const CreateAreaForm = () => {
   const token = localStorage.getItem('token')
   const [validated, setValidated] = useState(false)
-  const urlCategory = "https://localhost:44361/api/v1/categories"
+  const urlCategory = "https://localhost:44361/api/v1/areas"
   const handleSubmit = async (event) => {
     const noti = toast("Vui lòng đợi...");
     const form = event.currentTarget
@@ -36,11 +37,12 @@ const CreateCategoryForm = () => {
     }
     setValidated(true)
     if (form.checkValidity() === true) {
-      const name = event.target.category_name.value
-      console.log(name)
-      const data = { name: name }
-      // const myJSON = JSON.stringify(data);
-      // console.log(myJSON)
+      event.preventDefault()
+      const areaName = event.target.areaName.value;
+      console.log(areaName)
+      const data = { areaName }
+      const myJSON = JSON.stringify(data);
+      console.log(myJSON)
       fetch(urlCategory, {
         method: "POST",
         // axios.post(urlProduct, {
@@ -74,11 +76,7 @@ const CreateCategoryForm = () => {
     <CForm className="row g-3 needs-validation" validated={validated} onSubmit={handleSubmit}>
       <ToastContainer autoClose={1000} />
       <CCol md={6}>
-        <CFormInput
-          type="text"
-          id="category_name"
-          required
-        />
+        <CFormInput type="text" id="areaName" required />
       </CCol>
       <CCol xs={12}>
         <CButton color="primary" type="submit">
@@ -88,4 +86,4 @@ const CreateCategoryForm = () => {
     </CForm>
   )
 }
-export default CreateCategoryForm;
+export default CreateAreaForm;

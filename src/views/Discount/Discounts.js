@@ -17,15 +17,14 @@ import {
 } from '@coreui/react'
 import axios from 'axios'
 import DataTable from "react-data-table-component"
-import CreateProduct from './CreateProduct'
-import DetailProduct from './DetailProduct'
-import { ToastContainer } from "react-toastify";
-export default function Products() {
+import CreateDiscount from './CreateDiscount'
+import DetailDiscount from './DetailDiscount'
+export default function Discounts() {
     const token = localStorage.getItem('token')
-    const urlProduct = 'https://localhost:44361/api/v1/products?Status=0'
-    var [product, setProduct] = useState([])
+    const urlDiscount = 'https://localhost:44361/api/v1/discounts?Status=0'
+    var [discount, setDiscount] = useState([])
     const [search, setSearch] = useState('')
-    const [productInfo, setProductInfo] = useState()
+    const [discountInfo, setDiscountInfo] = useState()
     const [detailVisible, setDetailVisible] = useState(false)
     // var [isClicked, setIsClicked] = useState(false);
     // const [show, setShow] = useState(false);
@@ -34,7 +33,7 @@ export default function Products() {
     //     setShow(false);
     // };
     const fetchData = async () => {
-        axios.get(urlProduct, {
+        axios.get(urlDiscount, {
             headers: {
                 'Conttent-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
@@ -46,9 +45,9 @@ export default function Products() {
                 console.log(res.data)
                 console.log(res.data.data)
                 console.log(res.data.data.data)
-                setProduct(res.data.data.data)
-                product = res.data.data.data
-                console.log(product)
+                setDiscount(res.data.data.data)
+                discount = res.data.data.data
+                console.log(discount)
             }).catch((error) => {
                 console.log(error)
             })
@@ -57,9 +56,9 @@ export default function Products() {
     const checkStatus = (status) => {
         switch (status) {
             case 0:
-                return 'Đang bán'
+                return 'Đang tiến hành'
             case 1:
-                return 'Ngừng bán'
+                return 'Quá hạn'
             case 3:
                 return 'Đã xóa'
         }
@@ -75,7 +74,7 @@ export default function Products() {
         }
     }
     // const editAction = (row) => {
-    //     setProductInfo(row.id)
+    //     setDiscountInfo(row.id)
     // }
     // const onRowClick = (row) => {
     //     setDetailVisible(!detailVisible)
@@ -91,10 +90,10 @@ export default function Products() {
                     window.location.reload()
                 }}>
                     <CModalHeader>
-                        <CModalTitle>Thông Tin Sản phẩm</CModalTitle>
+                        <CModalTitle>Thông Tin Chiến Dịch</CModalTitle>
                     </CModalHeader>
                     <CModalBody>
-                        <DetailProduct id={row.id} />
+                        <DetailDiscount id={row.id} />
                     </CModalBody>
                     <CModalFooter>
                         <CButton color="secondary" onClick={() => {
@@ -112,20 +111,21 @@ export default function Products() {
     const columns = [
         {
             name: 'Tên Sản Phẩm',
-            selector: row => row.name,
+            selector: row => row.productId,
             sortable: true,
-            cell: row => (<div>{row.name}</div>)
+            cell: row => (<div>{row.productId}</div>)
         },
         {
-            name: 'Giá bán',
-            selector: row => row.price,
+            name: 'Tên Chiến dịch',
+            selector: row => row.campaignId,
             sortable: true,
-            cell: row => (<div>{parseFloat(row.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</div>)
-        }, {
-            name: 'Loại',
-            selector: row => row.categoryName,
+            cell: row => (<div>{row.campaignId}</div>)
+        },
+        {
+            name: 'Phần trăm',
+            selector: row => row.discountPercentage,
             sortable: true,
-            cell: row => (<div>{row.categoryName}</div>)
+            cell: row => (<div>{row.discountPercentage}</div>)
         },
         {
             name: 'Trạng thái',
@@ -148,24 +148,23 @@ export default function Products() {
         fetchData()
     }, [])
 
-    const filteredData = product.filter(item => {
-        return item.name.toLowerCase().match(search.toLowerCase())
+    const filteredData = discount.filter(item => {
+        return item.productId.toLowerCase().match(search.toLowerCase())
     })
 
     return (
         <CRow>
             <CCol xs={12}>
-                {/* <ToastContainer autoClose={1000} /> */}
                 <CCard className="mb-4">
                     <CCardHeader>
-                        <strong>Sản phẩm</strong>
+                        <strong>Khuyến mãi</strong>
                     </CCardHeader>
                     <CCardBody>
                         <DataTable
                             columns={columns}
                             data={filteredData}
                             pagination
-                            title='Danh sách sản phẩm'
+                            title='Danh sách Khuyến mãi'
                             fixedHeader
                             fixedHeaderScrollHeight='400px'
                             highlightOnHover
@@ -194,16 +193,16 @@ const VerticallyCentered = () => {
     const [visible, setVisible] = useState(false)
     return (
         <>
-            <CButton onClick={() => setVisible(!visible)}>Thêm Sản Phẩm</CButton>
+            <CButton onClick={() => setVisible(!visible)}>Thêm Khuyến mãi</CButton>
             <CModal size="xl" alignment="center" visible={visible} onClose={() => {
                 setVisible(false)
                 window.location.reload()
             }}>
                 <CModalHeader>
-                    <CModalTitle>Thêm Sản phẩm</CModalTitle>
+                    <CModalTitle>Thêm Khuyến mãi</CModalTitle>
                 </CModalHeader>
                 <CModalBody>
-                    <CreateProduct />
+                    <CreateDiscount />
                 </CModalBody>
                 <CModalFooter>
                     <CButton color="secondary" onClick={() => {

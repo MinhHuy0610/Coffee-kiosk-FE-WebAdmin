@@ -22,6 +22,7 @@ import {
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
 import { cilLockLocked, cilUser } from '@coreui/icons'
+import { toast, ToastContainer } from 'react-toastify'
 
 export default function Login({ setToken, setRole, setUserId }) {
   const userRef = useRef()
@@ -41,6 +42,7 @@ export default function Login({ setToken, setRole, setUserId }) {
   }, [username, password])
 
   async function loginUser(credentials) {
+    const noti = toast('Vui lòng đợi...')
     console.log(credentials)
     console.log(JSON.stringify(credentials))
     return fetch('https://localhost:44361/api/v1/auth', {
@@ -52,7 +54,14 @@ export default function Login({ setToken, setRole, setUserId }) {
     })
       .then((response) => {
         if (!response.ok) throw new Error(response.status)
-        else return response.json()
+        else {
+          toast.update(noti, {
+            render: 'Tạo thành công',
+            type: 'success',
+            isLoading: false,
+          })
+          return response.json()
+        }
       })
       .catch((error) => {
         console.log(error)
@@ -89,6 +98,7 @@ export default function Login({ setToken, setRole, setUserId }) {
   return (
     <div className="bg-light min-vh-100 d-flex flex-row align-items-center">
       <CContainer>
+        <ToastContainer autoClose={1000} />
         <CRow className="justify-content-center">
           <CCol md={8}>
             <CCardGroup>

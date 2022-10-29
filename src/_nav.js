@@ -66,14 +66,30 @@ const _nav = [
       },
       {
         component: CNavItem,
-        name: 'Buttons groups',
-        to: '/buttons/button-groups',
+        name: 'Khu vực',
+        to: '/area/areas',
       },
       {
         component: CNavItem,
-        name: 'Tao Loai',
-        to: '/category/create_categories',
+        name: 'Chiến dịch',
+        to: '/campaign/campaigns',
       },
+      {
+        component: CNavItem,
+        name: 'Khuyến mãi',
+        to: '/discount/discounts',
+      },
+      {
+        component: CNavItem,
+        name: 'Cửa hàng',
+        to: '/shop/shops',
+      },
+      {
+        component: CNavItem,
+        name: 'Tài khoản',
+        to: '/account/accounts',
+      },
+
     ],
   },
   // {

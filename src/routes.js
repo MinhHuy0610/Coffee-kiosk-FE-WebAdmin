@@ -5,7 +5,11 @@ const Colors = React.lazy(() => import('./views/theme/colors/Colors'))
 const Typography = React.lazy(() => import('./views/theme/typography/Typography'))
 const Products = React.lazy(() => import('./views/Product/Products'))
 const Categories = React.lazy(() => import('./views/Category/Categories'))
-const CreateCategoryForm = React.lazy(() => import('./views/Category/CreateCategoriesForm'))
+const Areas = React.lazy(() => import('./views/Area/Areas'))
+const Campaign = React.lazy(() => import('./views/Campaign/Campaigns'))
+const Discounts = React.lazy(() => import('./views/Discount/Discounts'))
+const Shop = React.lazy(() => import('./views/Shop/Shops'))
+const Account = React.lazy(() => import('./views/Account/Accounts'))
 
 // Base
 const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
@@ -100,7 +104,11 @@ const routes = [
   { path: '/widgets', name: 'Widgets', element: Widgets },
   { path: '/product/products', name: 'Sản phẩm', element: Products },
   { path: '/category/categories', name: 'Loại Sản phẩm', element: Categories },
-  { path: '/category/create_categories', name: 'taoj loai Sản phẩm', element: CreateCategoryForm },
+  { path: '/area/areas', name: 'Khu vực', element: Areas },
+  { path: '/campaign/campaigns', name: 'Chiến dịch', element: Campaign },
+  { path: '/discount/discounts', name: 'Khuyến mãi', element: Discounts },
+  { path: '/shop/shops', name: 'Cửa hàng', element: Shop },
+  { path: '/account/accounts', name: 'Tài khoản', element: Account },
 ]
 
 export default routes
