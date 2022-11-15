@@ -133,7 +133,7 @@ export default function Shops() {
             cell: row => (<div><p className={getColor(row.status)}>{checkStatus(row.status)}</p></div>)
         },
         {
-            name: 'Action',
+            name: 'Hành động',
             cell: (row) => (
                 // <button className='btn btn-primary' onClick={editAction(row)} >
                 //     Edit

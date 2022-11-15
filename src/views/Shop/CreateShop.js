@@ -20,9 +20,11 @@ const CreateShop = () => {
   const token = localStorage.getItem('token')
   const [validated, setValidated] = useState(false)
   var [areaOption, setAreaOption] = useState([])
+  var [accountOption, setAccountOption] = useState([])
   // var listImages = []
   console.log(token)
   const urlArea = 'https://localhost:44361/api/v1/areas'
+  const urlAccount = 'https://localhost:44361/api/v1/accounts?RoleName=Staff'
 
   const fetchData = async () => {
     axios.get(urlArea, {
@@ -46,6 +48,27 @@ const CreateShop = () => {
       }).catch((error) => {
         console.log(error)
       })
+    axios.get(urlAccount, {
+      headers: {
+        'Conttent-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    })
+      .then((res) => {
+        console.log(res)
+        console.log(res.data.data.data)
+        setAccountOption(
+          res.data.data.data.map((data) => {
+            var option = {
+              value: data.id,
+              label: data.username,
+            };
+            return option;
+          })
+        )
+      }).catch((error) => {
+        console.log(error)
+      })
   }
   const handleSubmit = (event) => {
     const noti = toast("Vui lòng đợi...");
@@ -61,7 +84,7 @@ const CreateShop = () => {
       const description = event.target.description.value
       const address = event.target.address.value
       const areaId = event.target.areaId.value
-      const accountId = 'eabb48b5-8973-4c96-9f37-1ded13384216'
+      const accountId = event.target.accountId.value
       const data = {
         name,
         description,
@@ -128,7 +151,7 @@ const CreateShop = () => {
           </CCol>
           <CCol md={12}>
             <CFormLabel htmlFor="validationDefaultUsername">Tài khoản</CFormLabel>
-            <CFormSelect id="accountId" options={areaOption}>
+            <CFormSelect id="accountId" options={accountOption}>
             </CFormSelect>
           </CCol>
           <CCol xs={12}>

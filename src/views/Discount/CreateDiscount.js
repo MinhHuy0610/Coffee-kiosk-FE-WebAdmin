@@ -82,12 +82,12 @@ const CreateDiscount = () => {
     if (form.checkValidity() === true) {
       event.preventDefault()
       const campaignId = event.target.campaignId.value
-      const productId = event.target.productId.value
-      const discountPercentage = event.target.discountPercentage.value
+      const discountValue = event.target.discountPercentage.value
+      const requiredValue = event.target.requiredValue.value
       const data = {
-        discountPercentage,
-        productId,
         campaignId,
+        discountValue,
+        requiredValue
       }
       console.log(JSON.stringify(data))
       const urlDiscount = 'https://localhost:44361/api/v1/discounts'
@@ -129,11 +129,6 @@ const CreateDiscount = () => {
       <ToastContainer autoClose={1000} />
       <CCol>
         <CCol md={12}>
-          <CFormLabel htmlFor="validationDefaultUsername">Chọn Sản Phẩm</CFormLabel>
-          <CFormSelect id="productId" options={productOption} >
-          </CFormSelect>
-        </CCol>
-        <CCol md={12}>
           <CFormLabel htmlFor="validationDefaultUsername">Chọn Chiến dịch</CFormLabel>
           <CFormSelect id="campaignId" options={campaignOption} >
           </CFormSelect>
@@ -141,6 +136,10 @@ const CreateDiscount = () => {
         <CCol md={12}>
           <CFormLabel htmlFor="validationDefaultUsername">Phần trăm khuyến mãi</CFormLabel>
           <CFormInput type="text" id="discountPercentage" required />
+        </CCol>
+        <CCol md={12}>
+          <CFormLabel htmlFor="validationDefaultUsername">Giá trị yêu cầu</CFormLabel>
+          <CFormInput type="text" id="requiredValue" required />
         </CCol>
         <CCol xs={12}>
           <CButton color="primary" type="submit">

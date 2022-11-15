@@ -52,42 +52,17 @@ const _nav = [
     component: CNavGroup,
     name: 'Coffee',
     to: '/Coffee',
-    // icon: <CIcon icon={cilPuzzle} customClassName="nav-icon" />,
+    icon: <CIcon icon={cilPuzzle} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
-        name: 'Sản Phẩm',
-        to: '/product/products',
+        name: 'Nhập hàng',
+        to: '/supplier/suppliers',
       },
       {
         component: CNavItem,
-        name: 'Loại Sản Phẩm',
-        to: '/category/categories',
-      },
-      {
-        component: CNavItem,
-        name: 'Khu vực',
-        to: '/area/areas',
-      },
-      {
-        component: CNavItem,
-        name: 'Chiến dịch',
-        to: '/campaign/campaigns',
-      },
-      {
-        component: CNavItem,
-        name: 'Khuyến mãi',
-        to: '/discount/discounts',
-      },
-      {
-        component: CNavItem,
-        name: 'Cửa hàng',
-        to: '/shop/shops',
-      },
-      {
-        component: CNavItem,
-        name: 'Tài khoản',
-        to: '/account/accounts',
+        name: 'Đơn hàng',
+        to: '/order/orders',
       },
 
     ],

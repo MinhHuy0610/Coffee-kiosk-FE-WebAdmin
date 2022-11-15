@@ -6,6 +6,7 @@ import './scss/style.scss'
 import useRole from './components/app/useRole'
 import useToken from './components/app/useToken'
 import useUserId from './components/app/useUserId'
+import useShopId from './components/app/useShopId'
 import "react-toastify/dist/ReactToastify.css";
 
 const loading = (
@@ -16,6 +17,7 @@ const loading = (
 
 // Containers
 const DefaultLayout = React.lazy(() => import('./layout/DefaultLayout'))
+const StaffDefaultLayout = React.lazy(() => import('./layout/StaffDefaultLayout'))
 
 // Pages
 const Login = React.lazy(() => import('./views/pages/login/Login'))
@@ -27,15 +29,17 @@ function App() {
   const { token, setToken } = useToken()
   const { role, setRole } = useRole()
   const { userId, setUserId } = useUserId()
+  const { shopId, setShopId } = useShopId()
   console.log(token)
   console.log(role)
   console.log(userId)
+  console.log(shopId)
   if (!token) {
     return (
       <BrowserRouter>
         <Routes>
           {/* <Route path="/login" name="Register Page" element={<Login setToken={setToken} setRole={setRole} setUserId={setUserId} />} /> */}
-          <Route path="*" name="Register Page" element={<Login setToken={setToken} setRole={setRole} setUserId={setUserId} />} />
+          <Route path="*" name="Register Page" element={<Login setToken={setToken} setRole={setRole} setUserId={setUserId} setShopId={setShopId} />} />
         </Routes>
       </BrowserRouter>
     )
@@ -47,6 +51,17 @@ function App() {
           <Route path="/404" name="Page 404" element={<Page404 />} />
           <Route path="/500" name="Page 500" element={<Page500 />} />
           <Route path="*" name="Home" element={<DefaultLayout />} />
+        </Routes>
+      </BrowserRouter>
+    )
+  } else if (token && role === 'Staff') {
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route path="/register" name="Register Page" element={<Register />} />
+          <Route path="/404" name="Page 404" element={<Page404 />} />
+          <Route path="/500" name="Page 500" element={<Page500 />} />
+          <Route path="*" name="Home" element={<StaffDefaultLayout />} />
         </Routes>
       </BrowserRouter>
     )

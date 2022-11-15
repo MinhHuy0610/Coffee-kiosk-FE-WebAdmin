@@ -16,17 +16,16 @@ import {
 import axios from 'axios'
 import { toast, ToastContainer } from "react-toastify";
 
-const CreateAccount = () => {
+const CreateSupplier = () => {
   const token = localStorage.getItem('token')
+  const shopId = localStorage.getItem('shopId')
   const [validated, setValidated] = useState(false)
-  var [roleOption, setRoleOption] = useState([])
+  const urlProduct = 'https://localhost:44361/api/v1/products?Status=0'
+  var [productOption, setProductOption] = useState([]);
   // var listImages = []
   console.log(token)
-  // replace area wih role
-  const urlRole = 'https://localhost:44361/api/v1/roles'
-
   const fetchData = async () => {
-    axios.get(urlRole, {
+    axios.get(urlProduct, {
       headers: {
         'Conttent-Type': 'application/json',
         'Authorization': `Bearer ${token}`
@@ -35,11 +34,11 @@ const CreateAccount = () => {
       .then((res) => {
         console.log(res)
         console.log(res.data.data.data)
-        setRoleOption(
-          res.data.data.map((data) => {
+        setProductOption(
+          res.data.data.data.map((data) => {
             var option = {
               value: data.id,
-              label: data.roleName,
+              label: data.name,
             };
             return option;
           })
@@ -58,20 +57,18 @@ const CreateAccount = () => {
     setValidated(true)
     if (form.checkValidity() === true) {
       event.preventDefault()
-      const username = event.target.username.value
-      const password = event.target.password.value
-      // const roleId = event.target.roleId.value
-      const roleId = event.target.roleId.value
+      const productId = event.target.productId.value
+      const quantity = event.target.quantity.value
       const data = {
-        username,
-        password,
-        roleId,
+        shopId,
+        productId,
+        quantity,
       }
       console.log(JSON.stringify(data))
-      const urlAccount = 'https://localhost:44361/api/v1/accounts'
-      fetch(urlAccount, {
+      const urlSupplier = 'https://localhost:44361/api/v1/supplies'
+      fetch(urlSupplier, {
         method: "POST",
-        // axios.post(urlShop, {
+        // axios.post(urlCampaign, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`
@@ -103,32 +100,26 @@ const CreateAccount = () => {
   }, [])
 
   return (
-    <CContainer className="px-4">
-      <CRow xs={{ gutterX: 5 }}>
-        <ToastContainer autoClose={1000} />
-        <CForm className="row g-3 needs-validation" validated={validated} onSubmit={handleSubmit}>
-          <CCol md={12}>
-            <CFormLabel htmlFor="validationDefault01">Tên Tài khoản</CFormLabel>
-            <CFormInput type="text" id="username" required />
-          </CCol>
-          <CCol md={12}>
-            <CFormLabel htmlFor="validationDefault02">Mật khẩu</CFormLabel>
-            <CFormInput type="text" id="password" required />
-          </CCol>
-          <CCol md={12}>
-            <CFormLabel htmlFor="validationDefaultUsername">Vai trò</CFormLabel>
-            <CFormSelect id="roleId" options={roleOption}>
-            </CFormSelect>
-          </CCol>
-          <CCol xs={12}>
-            <CButton color="primary" type="submit">
-              Tạo Tài khoản
-            </CButton>
-          </CCol>
-        </CForm>
-      </CRow>
-    </CContainer>
+    <CForm className="row g-3 needs-validation" validated={validated} onSubmit={handleSubmit}>
+      <ToastContainer autoClose={1000} />
+      <CCol>
+        <CCol md={12}>
+          <CFormLabel htmlFor="validationDefaultUsername">Chọn Sản Phẩm</CFormLabel>
+          <CFormSelect id="productId" options={productOption} >
+          </CFormSelect>
+        </CCol>
+        <CCol md={12}>
+          <CFormLabel htmlFor="validationDefaultUsername">Số lượng</CFormLabel>
+          <CFormInput type="text" id="quantity" required />
+        </CCol>
+        <CCol xs={12}>
+          <CButton color="primary" type="submit">
+            Nhập hàng
+          </CButton>
+        </CCol>
+      </CCol>
+    </CForm>
   )
 }
 
-export default CreateAccount
+export default CreateSupplier

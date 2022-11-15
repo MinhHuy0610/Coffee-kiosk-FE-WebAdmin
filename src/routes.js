@@ -10,6 +10,8 @@ const Campaign = React.lazy(() => import('./views/Campaign/Campaigns'))
 const Discounts = React.lazy(() => import('./views/Discount/Discounts'))
 const Shop = React.lazy(() => import('./views/Shop/Shops'))
 const Account = React.lazy(() => import('./views/Account/Accounts'))
+const Suppliers = React.lazy(() => import('./views/Supplier/Suppliers'))
+const Orders = React.lazy(() => import('./views/Order/Orders'))
 
 // Base
 const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
@@ -109,6 +111,8 @@ const routes = [
   { path: '/discount/discounts', name: 'Khuyến mãi', element: Discounts },
   { path: '/shop/shops', name: 'Cửa hàng', element: Shop },
   { path: '/account/accounts', name: 'Tài khoản', element: Account },
+  { path: '/supplier/suppliers', name: 'Nhập hàng', element: Suppliers },
+  { path: '/order/orders', name: 'Đơn hàng', element: Orders },
 ]
 
 export default routes

@@ -45,13 +45,13 @@ export default function DetailDiscount(props) {
     if (form.checkValidity() === true) {
       event.preventDefault()
       const campaignId = event.target.campaignId.value
-      const productId = event.target.productId.value
-      const discountPercentage = event.target.discountPercentage.value
+      const requiredValue = event.target.requiredValue.value
+      const discountValue = event.target.discountValue.value
       const data = {
         id,
-        discountPercentage,
-        productId,
+        discountValue,
         campaignId,
+        requiredValue
       }
       console.log(JSON.stringify(data))
       const urlDiscount = 'https://localhost:44361/api/v1/discounts'
@@ -154,26 +154,21 @@ export default function DetailDiscount(props) {
       <CForm className="row g-3 needs-validation" validated={validated} onSubmit={handleSubmit}>
         <ToastContainer autoClose={1000} />
         <CCol md={12}>
-          <CFormLabel htmlFor="validationDefault01">Tên Sản Phẩm</CFormLabel>
-          <CFormInput type="text" id="productName" readOnly={true} required defaultValue={discount.productId} />
-        </CCol>
-        <CCol md={12}>
           <CFormLabel htmlFor="validationDefault02">Tên Chiến dịch</CFormLabel>
-          <CFormInput type="text" id="campaignName" readOnly={true} required defaultValue={discount.campaignId} />
+          <CFormInput type="text" id="campaignName" readOnly={true} required defaultValue={discount.campaignName} />
         </CCol>
         <CCol md={12}>
           <CFormLabel htmlFor="validationDefaultUsername">Phần trăm khuyến mãi</CFormLabel>
-          <CFormInput type="text" id="discountPercentage" readOnly={!editable} required defaultValue={discount.discountPercentage} />
-        </CCol>
-        <CCol md={12}>
-          <CFormLabel htmlFor="validationDefaultUsername">Chọn để thay đổi Sản Phẩm</CFormLabel>
-          <CFormSelect id="productId" options={productOption} disabled={!editable} >
-          </CFormSelect>
+          <CFormInput type="text" id="discountPercentage" readOnly={!editable} required defaultValue={discount.discountValue} />
         </CCol>
         <CCol md={12}>
           <CFormLabel htmlFor="validationDefaultUsername">Chọn để thay đổi Chiến dịch</CFormLabel>
           <CFormSelect id="campaignId" options={campaignOption} disabled={!editable} >
           </CFormSelect>
+        </CCol>
+        <CCol md={12}>
+          <CFormLabel htmlFor="validationDefaultUsername">Giá trị yêu cầu</CFormLabel>
+          <CFormInput type="text" id="requiredValue" readOnly={!editable} required defaultValue={discount.requiredValue} />
         </CCol>
         <CCol xs={12}>
           <CButton color="primary" onClick={() => setEditable(true)} >

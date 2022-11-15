@@ -93,7 +93,7 @@ export default function Areas() {
       cell: row => (<div>{row.areaName}</div>)
     },
     {
-      name: 'Action',
+      name: 'Hành động',
       cell: (row) => (
         AreaForm(row)
       ),

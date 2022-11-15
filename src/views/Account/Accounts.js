@@ -22,7 +22,7 @@ import CreateAccount from './CreateAccount'
 import { ToastContainer } from "react-toastify";
 export default function Accounts() {
     const token = localStorage.getItem('token')
-    const urlAccount = 'https://localhost:44361/api/v1/accounts?Status=0'
+    const urlAccount = 'https://localhost:44361/api/v1/accounts'
     var [account, setAccount] = useState([])
     const [search, setSearch] = useState('')
     const [detailVisible, setDetailVisible] = useState(false)
@@ -117,18 +117,18 @@ export default function Accounts() {
             sortable: true,
             cell: row => (<div>{row.roleName}</div>)
         },
-        {
-            name: 'Trạng thái',
-            selector: row => row.status,
-            sortable: true,
-            cell: row => (<div><p className={getColor(row.status)}>{checkStatus(row.status)}</p></div>)
-        },
-        {
-            name: 'Action',
-            cell: (row) => (
-                DetailForm(row)
-            ),
-        },
+        // {
+        //     name: 'Trạng thái',
+        //     selector: row => row.status,
+        //     sortable: true,
+        //     cell: row => (<div><p className={getColor(row.status)}>{checkStatus(row.status)}</p></div>)
+        // },
+        // {
+        //     name: 'Hành động',
+        //     cell: (row) => (
+        //         DetailForm(row)
+        //     ),
+        // },
     ]
 
     useEffect(() => {
@@ -136,7 +136,7 @@ export default function Accounts() {
     }, [])
 
     const filteredData = account.filter(item => {
-        return item.name.toLowerCase().match(search.toLowerCase())
+        return item.username.toLowerCase().match(search.toLowerCase())
     })
 
     return (

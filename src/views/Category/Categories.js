@@ -99,7 +99,7 @@ export default function Categories() {
       cell: row => (<div><p className={getColor(row.status)}>{checkStatus(row.status)}</p></div>)
     },
     {
-      name: 'Action',
+      name: 'Hành động',
       cell: (row) => (
         CategoryForm(row)
       ),

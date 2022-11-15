@@ -17,14 +17,12 @@ import {
 } from '@coreui/react'
 import axios from 'axios'
 import DataTable from "react-data-table-component"
-import CreateDiscount from './CreateDiscount'
-import DetailDiscount from './DetailDiscount'
-export default function Discounts() {
+import DetailOrder from './DetailOrder'
+export default function Orders() {
     const token = localStorage.getItem('token')
-    const urlDiscount = 'https://localhost:44361/api/v1/discounts?Status=0'
-    var [discount, setDiscount] = useState([])
+    const urlOrder = 'https://localhost:44361/api/v1/orders'
+    var [order, setOrder] = useState([])
     const [search, setSearch] = useState('')
-    const [discountInfo, setDiscountInfo] = useState()
     const [detailVisible, setDetailVisible] = useState(false)
     // var [isClicked, setIsClicked] = useState(false);
     // const [show, setShow] = useState(false);
@@ -33,7 +31,7 @@ export default function Discounts() {
     //     setShow(false);
     // };
     const fetchData = async () => {
-        axios.get(urlDiscount, {
+        axios.get(urlOrder, {
             headers: {
                 'Conttent-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
@@ -45,9 +43,9 @@ export default function Discounts() {
                 console.log(res.data)
                 console.log(res.data.data)
                 console.log(res.data.data.data)
-                setDiscount(res.data.data.data)
-                discount = res.data.data.data
-                console.log(discount)
+                setOrder(res.data.data.data)
+                order = res.data.data.data
+                console.log(order)
             }).catch((error) => {
                 console.log(error)
             })
@@ -56,11 +54,11 @@ export default function Discounts() {
     const checkStatus = (status) => {
         switch (status) {
             case 0:
-                return 'Đang tiến hành'
+                return 'Đang thực hiện'
             case 1:
-                return 'Quá hạn'
+                return 'Hoàng thành'
             case 3:
-                return 'Đã xóa'
+                return 'Hủy'
         }
     }
     const getColor = (status) => {
@@ -74,7 +72,7 @@ export default function Discounts() {
         }
     }
     // const editAction = (row) => {
-    //     setDiscountInfo(row.id)
+    //     setShopInfo(row.id)
     // }
     // const onRowClick = (row) => {
     //     setDetailVisible(!detailVisible)
@@ -90,10 +88,10 @@ export default function Discounts() {
                     window.location.reload()
                 }}>
                     <CModalHeader>
-                        <CModalTitle>Thông Tin Chiến Dịch</CModalTitle>
+                        <CModalTitle>Chi tiết đơn hàng</CModalTitle>
                     </CModalHeader>
                     <CModalBody>
-                        <DetailDiscount id={row.id} />
+                        <DetailOrder id={row.id} totalPrice={row.totalPrice} />
                     </CModalBody>
                     <CModalFooter>
                         <CButton color="secondary" onClick={() => {
@@ -110,22 +108,15 @@ export default function Discounts() {
 
     const columns = [
         {
-            name: 'Tên Chiến dịch',
-            selector: row => row.campaignName,
+            name: 'Mã đơn hàng',
+            selector: row => row.id,
             sortable: true,
-            cell: row => (<div>{row.campaignName}</div>)
-        },
-        {
-            name: 'Phần trăm giảm giá',
-            selector: row => row.discountValue,
+            cell: row => (<div>{row.id}</div>)
+        }, {
+            name: 'Giá tổng cộng',
+            selector: row => row.totalPrice,
             sortable: true,
-            cell: row => (<div>{row.discountValue} %</div>)
-        },
-        {
-            name: 'Giá trị yêu cầu',
-            selector: row => row.requiredValue,
-            sortable: true,
-            cell: row => (<div>{parseFloat(row.requiredValue).toLocaleString('it-IT', { style: 'currency', currency: 'VND' })}</div>)
+            cell: row => (<div>{row.totalPrice}</div>)
         },
         {
             name: 'Trạng thái',
@@ -134,7 +125,7 @@ export default function Discounts() {
             cell: row => (<div><p className={getColor(row.status)}>{checkStatus(row.status)}</p></div>)
         },
         {
-            name: 'Action',
+            name: 'Hành động',
             cell: (row) => (
                 // <button className='btn btn-primary' onClick={editAction(row)} >
                 //     Edit
@@ -148,8 +139,8 @@ export default function Discounts() {
         fetchData()
     }, [])
 
-    const filteredData = discount.filter(item => {
-        return item.campaignId.toLowerCase().match(search.toLowerCase())
+    const filteredData = order.filter(item => {
+        return item.shopId.toLowerCase().match(search.toLowerCase())
     })
 
     return (
@@ -157,14 +148,14 @@ export default function Discounts() {
             <CCol xs={12}>
                 <CCard className="mb-4">
                     <CCardHeader>
-                        <strong>Khuyến mãi</strong>
+                        <strong>Thông tin Đơn Hàng</strong>
                     </CCardHeader>
                     <CCardBody>
                         <DataTable
                             columns={columns}
                             data={filteredData}
                             pagination
-                            title='Danh sách Khuyến mãi'
+                            title='Danh sách Đơn hàng'
                             fixedHeader
                             fixedHeaderScrollHeight='400px'
                             highlightOnHover
@@ -182,37 +173,10 @@ export default function Discounts() {
                         />
                     </CCardBody>
                     <CCardFooter>
-                        {VerticallyCentered()}
                     </CCardFooter>
                 </CCard>
             </CCol>
         </CRow>
     )
 }
-const VerticallyCentered = () => {
-    const [visible, setVisible] = useState(false)
-    return (
-        <>
-            <CButton onClick={() => setVisible(!visible)}>Thêm Khuyến mãi</CButton>
-            <CModal size="xl" alignment="center" visible={visible} onClose={() => {
-                setVisible(false)
-                window.location.reload()
-            }}>
-                <CModalHeader>
-                    <CModalTitle>Thêm Khuyến mãi</CModalTitle>
-                </CModalHeader>
-                <CModalBody>
-                    <CreateDiscount />
-                </CModalBody>
-                <CModalFooter>
-                    <CButton color="secondary" onClick={() => {
-                        setVisible(false)
-                        window.location.reload()
-                    }}>
-                        Đóng
-                    </CButton>
-                </CModalFooter>
-            </CModal>
-        </>
-    )
-}
+
