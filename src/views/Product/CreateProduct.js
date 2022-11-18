@@ -118,7 +118,11 @@ const CreateProduct = () => {
       // this.base64code = fileString
     };
     const setImage = fileString => {
-      var imageStr = fileString.slice(23)
+      var imageStr
+      var check = fileString.slice(11, 14)
+      if (check === "png") {
+        imageStr = fileString.slice(22)
+      } else imageStr = fileString.slice(23)
       listImage.push(imageStr)
       console.log("listImag: " + listImage)
     }

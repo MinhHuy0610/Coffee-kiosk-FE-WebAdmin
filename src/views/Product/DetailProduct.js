@@ -22,6 +22,9 @@ import { toast, ToastContainer } from "react-toastify";
 export default function DetailProduct(props) {
   const token = localStorage.getItem('token')
   const id = props.id
+  var [listImage, setListImage] = useState([])
+  var [imageId, setImageId] = useState()
+  const [hasImg, setHasImg] = useState(false)
   const urlGetProduct = `https://localhost:44361/api/v1/products/${id}`
   const urlCategory = 'https://localhost:44361/api/v1/categories?Status=0'
   var [cateOption, setCateOption] = useState([]);
@@ -118,6 +121,7 @@ export default function DetailProduct(props) {
         console.log(res.data.data)
         setProduct(res.data.data)
         product = res.data.data
+        setImageId(product.listImage[0].id)
         setUrlI(
           product.listImage.map((image) => {
             var url = image.link
@@ -140,6 +144,16 @@ export default function DetailProduct(props) {
       const file = files[0];
       getBase64(file);
     };
+    const setImage = fileString => {
+      var imageStr
+      var check = fileString.slice(11, 14)
+      if (check === "png") {
+        imageStr = fileString.slice(22)
+      } else imageStr = fileString.slice(23)
+      setHasImg(true)
+      listImage.push(imageStr)
+      console.log("Image: " + listImage)
+    }
 
     const onLoad = fileString => {
       console.log(fileString);
@@ -151,6 +165,7 @@ export default function DetailProduct(props) {
       reader.readAsDataURL(file);
       reader.onload = () => {
         onLoad(reader.result);
+        setImage(reader.result)
       };
     };
 
@@ -174,6 +189,53 @@ export default function DetailProduct(props) {
       </div>
     );
   };
+  const handleUpdateImage = () => {
+    const noti = toast("Vui lòng đợi...");
+    if (hasImg) {
+      const image = listImage[0]
+      const id = imageId
+      console.log(image)
+      const data = {
+        id,
+        image,
+      }
+      console.log(JSON.stringify(data))
+      const urlImage = 'https://localhost:44361/api/v1/productImages'
+      fetch(urlImage, {
+        method: "PUT",
+        // axios.post(urlProduct, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(data),
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error(response.status);
+          else {
+            toast.update(noti, {
+              render: "Cập nhật thành công",
+              type: "success",
+            });
+            return response.status;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          toast.update(noti, {
+            render: error.toString(),
+            type: "error",
+            isLoading: true,
+          });
+        });
+    } else {
+      toast.update(noti, {
+        render: "Vui lòng chọn ảnh để cập nhật",
+        type: "error",
+        isLoading: true,
+      });
+    }
+  }
 
   return (
     <CContainer className="px-4">
@@ -189,6 +251,9 @@ export default function DetailProduct(props) {
           </CListGroup>
           {/* <CImage src={linknn} /> */}
           <div>{UploadAndDisplayImage()}</div>
+          <CButton color="primary" onClick={handleUpdateImage} >
+            Cập nhật ảnh
+          </CButton>
         </CCol>
         <CCol>
           <CForm className="row g-3 needs-validation" validated={validated} onSubmit={handleSubmit}>
